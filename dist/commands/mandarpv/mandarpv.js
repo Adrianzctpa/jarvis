@@ -15,6 +15,7 @@ module.exports = {
         const user = interaction.options.get('usuario')?.user;
         await interaction.reply(`Enviando mensagem para ${user.username}...`).then(async () => {
             await user.send(msg);
+            await interaction.channel.send(`Mensagem enviada para ${user.username}`);
         });
     },
 };

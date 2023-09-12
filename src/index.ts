@@ -77,8 +77,6 @@ client.on(Events.InteractionCreate, async (interaction: discord.Interaction) => 
 });
 
 client.on(Events.MessageCreate, (message: discord.Message) => {
-    console.log('id: ', message.author.id)
-
     if (message.author.id === process.env.PETER && PETER_MODE) {
         message.channel.send({
             content: '>peter\nOk fixados.',
@@ -87,8 +85,10 @@ client.on(Events.MessageCreate, (message: discord.Message) => {
             }]
         })
 
-        message.pin()
-        message.unpin()
+
+        message.pin().then(() => {
+            message.unpin()
+        })
 
         return
     }

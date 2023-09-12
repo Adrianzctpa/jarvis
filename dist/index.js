@@ -71,7 +71,6 @@ client.on(discord_js_1.Events.InteractionCreate, async (interaction) => {
     });
 });
 client.on(discord_js_1.Events.MessageCreate, (message) => {
-    console.log('id: ', message.author.id);
     if (message.author.id === process.env.PETER && PETER_MODE) {
         message.channel.send({
             content: '>peter\nOk fixados.',
@@ -79,8 +78,9 @@ client.on(discord_js_1.Events.MessageCreate, (message) => {
                     attachment: "../assets/jarvissorriso.png",
                 }]
         });
-        message.pin();
-        message.unpin();
+        message.pin().then(() => {
+            message.unpin();
+        });
         return;
     }
     if (message.content === "arte" || message.content === "Arte") {

@@ -67,6 +67,14 @@ client.on("messageCreate", (message: discord.Message) => {
        (targetMember.user).send(`${reply}`);
     }
 
+    if(message.content.includes("avalie")){
+        const nota = Math.floor(Math.random() * 10);
+        if(nota === 10){
+            message.reply("Nota 10, hiperculturemia")
+        }
+        else{message.reply(`Nota ${nota}`)}
+    }
+
     message.reply("Afirmativo senhor.")
     message.channel.send({
         files: [{

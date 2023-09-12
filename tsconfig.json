@@ -10,7 +10,7 @@
         "rootDirs": ["src", "tests"],
         "baseUrl": "src",
         "paths": {
-        "@/": [""]
+            "@/": [""]
         },
         "plugins": [
         {
@@ -18,5 +18,5 @@
         }
         ]
     },
-    "include": ["src", "tests"]
+    "include": ["src", "tests"],
 }

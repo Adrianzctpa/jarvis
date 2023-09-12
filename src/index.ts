@@ -1,8 +1,16 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '../.env'});
-import discord, { Client, GatewayIntentBits } from 'discord.js';
+import discord, { Client, GatewayIntentBits, Events, Collection } from 'discord.js';
+import fs from 'fs';
+import path from 'path';
 
 var PETER_MODE = false
+
+// Client for some reason does not support slash commands by default
+interface discordClient extends Client {
+    commands: Collection<string, any>
+}
+
 const client = new Client({
     intents: [
         GatewayIntentBits.DirectMessages,
@@ -10,13 +18,65 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
     ]
-});
+}) as discordClient;
 
-client.on("ready", () => {
-    console.log("Jarvis ligou, senhor.")
+client.commands = new Collection()
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
+
+for (const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			client.commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
+}
+
+client.on(Events.ClientReady, () => {
+    console.log("Jarvis ligou, senhor")
 })
 
-client.on("messageCreate", (message: discord.Message) => {
+client.on(Events.InteractionCreate, async (interaction: discord.Interaction) => {
+    if (!interaction.isChatInputCommand()) return;
+    
+    const command = client.commands.get(interaction.commandName);
+
+    if (!command) return;
+
+    await interaction.channel.send({
+        content: 'Afirmativo senhor.',
+        files: [{
+            attachment: "../assets/jarvissorriso.png",
+        }]
+    }).then(async () => {
+        try {
+            await command.execute(interaction);
+        } catch (error) {
+            console.error(error);
+    
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp({
+                    content: 'There was an error while executing this command!',
+                    ephemeral: true,
+                });
+            } else {
+                await interaction.reply({
+                    content: 'There was an error while executing this command!',
+                    ephemeral: true,
+                });
+            }
+        }
+    })
+});
+
+client.on(Events.MessageCreate, (message: discord.Message) => {
     console.log('id: ', message.author.id)
 
     if (message.author.id === process.env.PETER && PETER_MODE) {
@@ -33,13 +93,13 @@ client.on("messageCreate", (message: discord.Message) => {
         return
     }
 
-    if (message.content.includes("arte")) {
+    if (message.content === "arte" || message.content === "Arte") {
         message.reply("conceito isso, senhor.")
     }
 
-    if (!message.content.includes(".jarvis")) {
-        return
-    }
+    if (!message.content.startsWith(".jarvis")) return;
+
+    message.reply("Afirmativo senhor.")
 
     if (message.content.includes("peter")) {
         if (PETER_MODE) {
@@ -67,20 +127,13 @@ client.on("messageCreate", (message: discord.Message) => {
        (targetMember.user).send(`${reply}`);
     }
 
-    if(message.content.includes("avalie")){
-        const nota = Math.floor(Math.random() * 10);
-        if(nota === 10){
-            message.reply("Nota 10, hiperculturemia")
-        }
-        else{message.reply(`Nota ${nota}`)}
-    }
-
-    message.reply("Afirmativo senhor.")
     message.channel.send({
         files: [{
             attachment: "../assets/jarvissorriso.png",
         }]
     })
 })
+
+//TODO: Convert almost every command to slash
 
 client.login(process.env.DISCORD_TOKEN);

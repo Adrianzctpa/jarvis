@@ -12,8 +12,8 @@ module.exports = {
         .addStringOption(option => option.setName('pessoa').setDescription('Pessoa a ser doxxada').setRequired(true)),
 	async execute(interaction: discord.CommandInteraction) {
         const param = interaction.options.get('pessoa')?.value
-        let longitude = getRandomInRange(-180, 180, 6)
-        let latitude = getRandomInRange(-90, 90, 6)
+        let longitude = getRandomInRange(-73, -34, 3)
+        let latitude = getRandomInRange(-33, 5, 3)
 
         interaction.reply(`Localização de ${param}: https://www.google.com/maps/place/${latitude},${longitude}`)
 	},

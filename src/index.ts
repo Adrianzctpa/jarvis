@@ -117,16 +117,6 @@ client.on(Events.MessageCreate, (message: discord.Message) => {
 
     }
 
-    if(message.content.includes("suba o chat")){
-        message.reply(" .\n. \n .\n .\n. \n .\n .\n .\n .\n. \n. \n .  \n .\n .\n. \n. \n .\n. \n")
-    }
-
-    if (message.content.startsWith('mande pv ') && message.mentions.users.size) {
-        var reply= message.toString().split(' ').join(' ') // Takes the DM content from the message
-        const targetMember = message.mentions.members.first();
-       (targetMember.user).send(`${reply}`);
-    }
-
     message.channel.send({
         files: [{
             attachment: "../assets/jarvissorriso.png",

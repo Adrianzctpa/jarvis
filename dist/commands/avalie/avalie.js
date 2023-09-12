@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('Avalia algo objetivamente')
         .addStringOption(option => option.setName('coisa').setDescription('Coisa a ser avaliada').setRequired(true)),
     async execute(interaction) {
-        const nota = Math.floor(Math.random() * 10);
+        const nota = Math.floor(Math.random() * 11);
         const str = nota.toString();
         const param = interaction.options.get('coisa')?.value;
         await interaction.channel.send(`Avaliando ${param}...`).then(async () => {

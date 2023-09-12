@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-dotenv.config();
-import { Client, GatewayIntentBits } from 'discord.js';
+dotenv.config({ path: '../.env'});
+import discord, { Client, GatewayIntentBits } from 'discord.js';
 
 const client = new Client({
     intents: [
@@ -15,7 +15,7 @@ client.on("ready", () => {
     console.log("Jarvis ligou, senhor.")
 })
 
-client.on("messageCreate", (message) => {
+client.on("messageCreate", (message: discord.Message) => {
     console.log(message.content)
 
     if (!message.content.includes(".jarvis")) {
@@ -26,7 +26,7 @@ client.on("messageCreate", (message) => {
 
     message.channel.send({
         files: [{
-            attachment: "assets/jarvissorriso.png",
+            attachment: "../assets/jarvissorriso.png",
         }]
     })
 })

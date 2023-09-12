@@ -18,7 +18,21 @@ client.on("ready", () => {
     console.log("Jarvis ligou, senhor.");
 });
 client.on("messageCreate", (message) => {
-    console.log(message.content);
+    console.log('id: ', message.author.id);
+    if (message.author.id === process.env.PETER) {
+        message.channel.send({
+            content: '>peter\nOk fixados.',
+            files: [{
+                    attachment: "../assets/jarvissorriso.png",
+                }]
+        });
+        message.pin();
+        message.unpin();
+        return;
+    }
+    if (message.content.includes("arte")) {
+        message.reply("conceito isso, senhor.");
+    }
     if (!message.content.includes(".jarvis")) {
         return;
     }
